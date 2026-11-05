@@ -19,16 +19,15 @@ const PTS = {
   zipBytes: 84166,
   zipSha256: "58d86391c99d144685edc7c11ff985ecc9ce3e44241bb3b3135a66208f994f81",
   fileCount: 57,
-  selfTest: "25/25",
   // What is actually inside the v3.1.0 zip (verified against the archive).
   zipContents: [
-    { name: "bin/pts", desc: "The command line: orchestrate, runs, verdict, doctor, snapshot, restore, config, self-test." },
+    { name: "bin/pts", desc: "The command line: orchestrate, runs, verdict, doctor, snapshot, restore, config." },
     { name: "install.sh + uninstall.sh", desc: "Guarded installer — backs up before replacing, rolls back on failure, clean uninstall." },
     { name: "scripts/orchestrate.py", desc: "The orchestration engine: brief, plan, build, test, diagnose, repair, package, approval stop." },
     { name: "scripts/doctor.py, snapshot.py, config.py, termux-check.py, ship-check.py", desc: "Setup checks, hash-verified snapshots and restores, per-tree config, Termux packaging checks, ship checks." },
     { name: "assets/templates/ (12 files)", desc: "Project brief, shipping checklist, release notes, verdict log, store listing, Termux steps, and more." },
     { name: "fixtures/demo-good + demo-bad", desc: "Two demo trees — one that ships, one with a leaked file — so you can try the loop before your own project." },
-    { name: "tests/run_tests.py", desc: "The self-test suite: 25 checks, all passing on this build." },
+    { name: "tests/run_tests.py", desc: "The test suite for the tool." },
     { name: "docs, references, README, CHANGELOG", desc: "Onboarding, compatibility, release checklist, and the full changelog." }
   ],
   // FAQ — every answer traces to the product, the license, or this config.
@@ -55,9 +54,9 @@ const PTS = {
     "CI gate: the package refuses to build when the suite fails"
   ],
   changelog: [
-    { version: "3.1.0", date: "2026-11-05", notes: "Production hardening: Termux checks, guarded installer, doctor, snapshots, config, logging, CI gate. 25/25 self-test." },
+    { version: "3.1.0", date: "2026-11-05", notes: "Production hardening: Termux checks, guarded installer, doctor, snapshots, config, logging, CI gate." },
     { version: "3.0.0", date: "2026-11-04", notes: "Merged product line: guarded install, doctor, secret scan." },
     { version: "1.2.0", date: "2026-11-04", notes: "Orchestration engine: brief, plan, build, test, diagnose, repair, package, approval stop." },
-    { version: "1.1.0", date: "2026-11-04", notes: "First product build: installer, templates, self-test." }
+    { version: "1.1.0", date: "2026-11-04", notes: "First product build: installer, templates." }
   ]
 };

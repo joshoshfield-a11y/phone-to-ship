@@ -169,7 +169,7 @@
   <header class="hero">
     <div class="hero-grid">
       <div>
-        <p class="pills"><span class="pill" id="version-pill"></span><span class="pill" id="test-pill"></span></p>
+        <p class="pills"><span class="pill" id="version-pill"></span></p>
         <h1 id="headline"></h1>
         <p class="lede">Write a short brief on your phone. Phone-to-Ship plans the build, builds it, tests it, diagnoses what broke, repairs what it safely can, and packages it — then stops and waits for your word before anything ships.</p>
         <div id="buy-buttons"></div>
@@ -368,7 +368,6 @@ $ pts verdict &lt;run-id&gt; ship</code></pre>
   document.getElementById("brand-ver").textContent = "v" + PTS.version;
   document.getElementById("nav-buy").textContent = "Buy — $" + PTS.price;
   document.getElementById("version-pill").innerHTML = "v" + PTS.version + " · " + PTS.releaseDate;
-  document.getElementById("test-pill").innerHTML = "self-test <b>" + PTS.selfTest + "</b> passing";
   document.getElementById("headline").textContent = PTS.tagline;
   document.getElementById("buy-buttons").innerHTML = buyButtonsHTML();
   document.getElementById("buy-buttons-2").innerHTML = buyButtonsHTML();
@@ -377,7 +376,6 @@ $ pts verdict &lt;run-id&gt; ship</code></pre>
 
   // ---- trust strip (verified facts only) ----
   const trust = [
-    ["Self-test " + PTS.selfTest, "passing on this build"],
     [PTS.fileCount + " files", "in the download, listed below"],
     ["Python stdlib only", "no dependencies to install"],
     ["No network calls", "runs entirely on your phone"],
