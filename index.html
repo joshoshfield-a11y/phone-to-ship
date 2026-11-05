@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phone-to-Ship — brief it on your phone, ship a tested web app</title>
+<meta name="description" content="Phone-to-Ship turns a short brief into a tested, packaged web app, built and verified from your phone via Termux.">
+<style>
+  :root { --bg:#0d1117; --panel:#161b22; --line:#30363d; --text:#e6edf3; --dim:#8b949e; --amber:#f0a832; --green:#3fb950; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",sans-serif; line-height:1.6; }
+  .wrap { max-width:760px; margin:0 auto; padding:48px 20px 80px; }
+  h1 { font-size:2.4em; line-height:1.15; margin:0 0 8px; }
+  h2 { margin-top:48px; border-bottom:1px solid var(--line); padding-bottom:8px; }
+  .tag { color:var(--dim); font-size:1.15em; margin:0 0 24px; }
+  .pill { display:inline-block; background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:2px 12px; color:var(--dim); font-size:.85em; margin:0 6px 6px 0; }
+  .buy { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:24px; margin:32px 0; }
+  .price { font-size:2em; font-weight:700; }
+  .price span { font-size:.5em; color:var(--dim); font-weight:400; }
+  .btn { display:inline-block; background:var(--amber); color:#111; font-weight:700; text-decoration:none; border-radius:8px; padding:12px 22px; margin:8px 8px 0 0; }
+  .btn.ghost { background:transparent; color:var(--text); border:1px solid var(--line); }
+  .dim { color:var(--dim); }
+  .small { font-size:.85em; }
+  pre { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px; overflow-x:auto; }
+  code { color:var(--amber); }
+  ul { padding-left:20px; }
+  li { margin-bottom:8px; }
+  .ver { color:var(--green); font-family:ui-monospace,monospace; font-size:.85em; word-break:break-all; }
+  footer { margin-top:64px; color:var(--dim); font-size:.85em; }
+  a { color:var(--amber); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p><span class="pill" id="version-pill"></span><span class="pill" id="test-pill"></span></p>
+  <h1>Phone-to-Ship</h1>
+  <p class="tag" id="tagline"></p>
+
+  <div class="buy">
+    <div class="price" id="price"></div>
+    <p class="dim" id="price-note">One payment. Yours to keep, use on your own devices, personal and commercial. No subscription, no account, no telemetry.</p>
+    <div id="buy-buttons"></div>
+    <p class="dim small" id="fulfil-note"></p>
+  </div>
+
+  <h2>What it does</h2>
+  <p>You write a short brief on your phone. Phone-to-Ship plans the build, builds it, tests it, diagnoses what broke, repairs what it safely can, and packages it — then stops and waits for your word before anything ships.</p>
+  <ul id="features"></ul>
+
+  <h2>How it runs</h2>
+  <pre><code>$ pts orchestrate brief.md
+$ pts runs
+$ pts verdict &lt;run-id&gt; ship</code></pre>
+  <p class="dim">Runs in Termux on Android. Python 3.9+, standard library only, no network calls.</p>
+
+  <h2 id="whats-new-h">What's new in <span id="wn-version"></span></h2>
+  <ul id="whats-new"></ul>
+
+  <h2>Changelog</h2>
+  <div id="changelog"></div>
+
+  <h2>Honest limits</h2>
+  <ul>
+    <li>The Termux checks prove the package installs cleanly under Termux. A real-phone run is still your verdict.</li>
+    <li>The one automatic repair quarantines leaked files. It never deletes, never fabricates, never edits your code. Everything else waits for you.</li>
+    <li>Buying v3 includes every v3.x update. A future v4 would be a separate purchase.</li>
+  </ul>
+
+  <h2>License</h2>
+  <p>Short plain-English license: pay once, use it forever on your machines, don't pass it around. <a href="LICENSE.md">Read the full license</a>.</p>
+
+  <h2>Verify the download</h2>
+  <p class="dim small">Every release lists its exact size and SHA-256 so you can check the file you got is the file that was built.</p>
+  <p class="ver" id="verify"></p>
+
+  <footer>
+    <p>Built by Taylor Christian Mattheisen (DOGBYTE). Questions or support: <a id="support" href="#">email</a>.</p>
+    <p><a id="gh" href="#">Source and releases on GitHub</a></p>
+  </footer>
+</div>
+<script src="config.js"></script>
+<script>
+  document.getElementById("version-pill").textContent = "v" + PTS.version + " · " + PTS.releaseDate;
+  document.getElementById("test-pill").textContent = "self-test " + PTS.selfTest + " passing";
+  document.getElementById("tagline").textContent = PTS.tagline;
+  document.getElementById("price").innerHTML = PTS.priceLabel + ' <span>one-time</span>';
+  const btns = document.getElementById("buy-buttons");
+  if (PTS.itchUrl) {
+    btns.innerHTML += '<a class="btn" href="' + PTS.itchUrl + '">Buy on itch.io — instant download</a>';
+  }
+  if (PTS.stripePaymentLink) {
+    btns.innerHTML += '<a class="btn ghost" href="' + PTS.stripePaymentLink + '">Buy direct with card (Stripe)</a>';
+  }
+  if (!PTS.itchUrl && !PTS.stripePaymentLink) {
+    btns.innerHTML += '<p class="dim">Sales open soon — check back, or email for the current version.</p>';
+  }
+  document.getElementById("fulfil-note").textContent =
+    PTS.stripePaymentLink
+      ? "Direct card purchases are fulfilled by email: send your receipt to " + PTS.supportEmail + " and the download link comes back. itch.io purchases download instantly."
+      : "Purchases download instantly from itch.io.";
+  document.getElementById("features").innerHTML = PTS.features.map(f => "<li>" + f + "</li>").join("");
+  document.getElementById("wn-version").textContent = "v" + PTS.version;
+  document.getElementById("whats-new").innerHTML = PTS.whatsNew.map(f => "<li>" + f + "</li>").join("");
+  document.getElementById("changelog").innerHTML = PTS.changelog.map(c =>
+    "<p><strong>v" + c.version + "</strong> <span class='dim'>" + c.date + "</span><br>" + c.notes + "</p>").join("");
+  document.getElementById("verify").textContent =
+    "v" + PTS.version + ": " + PTS.zipBytes.toLocaleString() + " bytes · sha256 " + PTS.zipSha256;
+  const sup = document.getElementById("support");
+  sup.textContent = PTS.supportEmail; sup.href = "mailto:" + PTS.supportEmail;
+  document.getElementById("gh").href = PTS.githubUrl;
+</script>
+</body>
+</html>
