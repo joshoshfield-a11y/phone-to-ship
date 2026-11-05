@@ -5,7 +5,7 @@
 const PTS = {
   name: "Phone-to-Ship",
   tagline: "Brief it on your phone. Ship a tested web app from your phone.",
-  version: "3.1.0",
+  version: "3.3.0",
   releaseDate: "2026-11-05",
   price: 25,
   currency: "USD",
@@ -16,14 +16,15 @@ const PTS = {
   githubUrl: "https://github.com/joshoshfield-a11y/phone-to-ship",
   supportEmail: "dogsbarkdogsbyte@gmail.com",
   // Verified build facts for this version (update on each release).
-  zipBytes: 84166,
-  zipSha256: "58d86391c99d144685edc7c11ff985ecc9ce3e44241bb3b3135a66208f994f81",
-  fileCount: 57,
-  // What is actually inside the v3.1.0 zip (verified against the archive).
+  zipBytes: 113340,
+  zipSha256: "6f792781fca0015d7a8138d950b3e7edbd402c111905c7c878f2995d269ef9d1",
+  fileCount: 68,
+  // What is actually inside the v3.3.0 zip (verified against the archive).
   zipContents: [
-    { name: "bin/pts", desc: "The command line: orchestrate, runs, verdict, doctor, snapshot, restore, config." },
+    { name: "bin/pts", desc: "The command line: orchestrate, runs, verdict, doctor, snapshot, restore, config, ai, agents." },
     { name: "install.sh + uninstall.sh", desc: "Guarded installer — backs up before replacing, rolls back on failure, clean uninstall." },
     { name: "scripts/orchestrate.py", desc: "The orchestration engine: brief, plan, build, test, diagnose, repair, package, approval stop." },
+    { name: "scripts/ai/ + scripts/agents/", desc: "Muse-loop AI (prompt-out, JSON-in, safety core) and 7-role agent orchestration (persistent queue, checkpoints, bounded retries, human verdict)." },
     { name: "scripts/doctor.py, snapshot.py, config.py, termux-check.py, ship-check.py", desc: "Setup checks, hash-verified snapshots and restores, per-tree config, Termux packaging checks, ship checks." },
     { name: "assets/templates/ (12 files)", desc: "Project brief, shipping checklist, release notes, verdict log, store listing, Termux steps, and more." },
     { name: "fixtures/demo-good + demo-bad", desc: "Two demo trees — one that ships, one with a leaked file — so you can try the loop before your own project." },
@@ -37,23 +38,27 @@ const PTS = {
     { q: "What happens after I pay?", a: "On itch.io the download is instant. Buying direct with a card, you email your receipt to dogsbarkdogsbyte@gmail.com and the download link comes back to you." },
     { q: "Does it publish or ship anything by itself?", a: "No. It plans, builds, tests, diagnoses, and packages — then stops and waits for your verdict. A ship verdict records your decision only; nothing is published, pushed, or sent without you." },
     { q: "What if a build goes wrong?", a: "Diagnosis names the problem plainly — missing file, leaked file, JS syntax error, empty tree — with the exact file. The one automatic repair quarantines leaked files. It never deletes, never fabricates, never edits your code. Everything else waits for you." },
-    { q: "What does the $25 cover?", a: "One payment for v3.1.0 and every v3.x update. A future v4 would be a separate purchase. If it doesn't work for you, ask within 14 days of purchase and you get a refund." }
+    { q: "What does the $25 cover?", a: "One payment for v3.3.0 and every v3.x update. A future v4 would be a separate purchase. If it doesn't work for you, ask within 14 days of purchase and you get a refund." }
   ],
   features: [
     "Brief to shipped package: write a short brief, get a plan, build, test, diagnose, repair, package — with an approval stop before anything ships.",
     "Honest diagnosis: missing files, leaked files, JS syntax errors, empty trees — named plainly, with the exact file.",
     "Safe repairs only: the one automatic repair quarantines leaked files. It never deletes, never fabricates, never edits your code.",
+    "Agent orchestration: seven roles (architect, code, asset, test, build, deployment, qa) on one persistent queue — checkpointed after every step, with a human verdict at the end.",
+    "Muse-loop AI: code and asset work arrives as validated JSON replies. No live model, no keys, no network.",
     "Doctor, snapshots, and logs: pts doctor checks your setup, pts snapshot/restore guards your work with hash verification, every run is logged.",
     "Termux-safe by check, not by claim: packaging checks prove the build installs cleanly under Termux. A real-phone run is still your verdict.",
     "Offline and stdlib-only: no network calls, no accounts, no telemetry."
   ],
   whatsNew: [
+    "Agent orchestration: 7 roles on one persistent queue, checkpoint after every step, bounded retries, human verdict gate",
+    "Muse-loop AI: pts ai prompt/import with the shared safety core — no live model, no keys, no network",
     "Termux packaging checks (8 checks, all passing)",
-    "Guarded installer: backup before replace, rollback on failure, clean uninstall",
-    "pts doctor, pts snapshot/restore, pts config, per-run logs",
-    "CI gate: the package refuses to build when the suite fails"
+    "Guarded installer: backup before replace, rollback on failure, clean uninstall"
   ],
   changelog: [
+    { version: "3.3.0", date: "2026-11-05", notes: "Agent orchestration: 7 roles on one persistent queue, checkpoint after every step, bounded retries, human verdict gate. Suite 38/38." },
+    { version: "3.2.0", date: "2026-11-05", notes: "Muse-loop AI: pts ai prompt/import with the shared safety core — no live model, no keys, no network." },
     { version: "3.1.0", date: "2026-11-05", notes: "Production hardening: Termux checks, guarded installer, doctor, snapshots, config, logging, CI gate." },
     { version: "3.0.0", date: "2026-11-04", notes: "Merged product line: guarded install, doctor, secret scan." },
     { version: "1.2.0", date: "2026-11-04", notes: "Orchestration engine: brief, plan, build, test, diagnose, repair, package, approval stop." },
