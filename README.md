@@ -20,6 +20,10 @@ file is the whole product record the page shows.
   download link comes back). itch.io purchases download instantly.
 - `LICENSE.md` — the plain-English license, same text as the product
   folder. The next product zip build should bundle it inside the zip.
+- `sitemap.xml` — single URL (the landing page), `lastmod` = release
+  date. Update `lastmod` on each release.
+- `robots.txt` — allows all crawlers, points at the sitemap.
+  `success.html` carries `noindex` (post-payment page, not for search).
 
 ## Notes
 
