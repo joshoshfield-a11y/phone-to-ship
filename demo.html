@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Try the demo — Phone-to-Ship</title>
+<meta name="description" content="Walk through a real Phone-to-Ship run step by step: brief, check, orchestrate, package, verdict. Real commands, real output, no download.">
+<link rel="canonical" href="https://joshoshfield-a11y.github.io/phone-to-ship/demo.html">
+<style>
+  :root {
+    --bg:#0d1117; --bg-soft:#10151c; --panel:#161b22; --panel-2:#1c232d;
+    --line:#30363d; --text:#e6edf3; --dim:#8b949e; --dim-2:#6e7681;
+    --amber:#f0a832; --amber-soft:rgba(240,168,50,.12); --green:#3fb950;
+    --radius:14px; --nav-h:60px;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; scroll-padding-top:calc(var(--nav-h) + 16px); }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; line-height:1.6; -webkit-text-size-adjust:100%; }
+  a { color:var(--amber); }
+  h1,h2,h3 { line-height:1.2; letter-spacing:-.01em; }
+  h2 { font-size:1.65em; margin:0 0 8px; }
+  h3 { font-size:1.05em; margin:0 0 6px; }
+  p { margin:0 0 14px; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+  .dim { color:var(--dim); }
+  .small { font-size:.88em; }
+  .section { padding:64px 0; }
+  .section + .section { border-top:1px solid var(--line); }
+  .section-head { max-width:640px; margin-bottom:32px; }
+  .section-head p { color:var(--dim); margin:0; }
+  .eyebrow { color:var(--amber); font-size:.8em; font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin:0 0 10px; }
+
+  /* ---------- nav ---------- */
+  nav { position:sticky; top:0; z-index:50; height:var(--nav-h); background:rgba(13,17,23,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+  .nav-inner { max-width:1080px; margin:0 auto; padding:0 20px; height:var(--nav-h); display:flex; align-items:center; gap:20px; }
+  .brand { display:flex; align-items:baseline; gap:8px; color:var(--text); text-decoration:none; font-weight:800; font-size:1.05em; white-space:nowrap; }
+  .brand .ver-pill { font-size:.72em; font-weight:600; color:var(--dim); border:1px solid var(--line); border-radius:999px; padding:1px 8px; }
+  .nav-links { display:none; gap:4px; margin-left:auto; }
+  .nav-links a { color:var(--dim); text-decoration:none; font-size:.92em; padding:8px 12px; border-radius:8px; }
+  .nav-links a:hover { color:var(--text); background:var(--panel); }
+  .nav-links a[aria-current="page"] { color:var(--amber); }
+  .nav-buy { margin-left:auto; }
+  .nav-links + .nav-buy { margin-left:0; }
+
+  /* ---------- buttons ---------- */
+  .btn { display:inline-block; background:var(--amber); color:#111; font-weight:700; text-decoration:none; border-radius:9px; padding:13px 24px; margin:6px 10px 6px 0; border:1px solid transparent; cursor:pointer; font-size:1em; font-family:inherit; }
+  .btn:hover { filter:brightness(1.08); }
+  .btn.ghost { background:transparent; color:var(--text); border-color:var(--line); }
+  .btn.ghost:hover { background:var(--panel); filter:none; }
+  .btn.small { padding:8px 16px; margin:0; font-size:.92em; }
+  .btn:disabled { opacity:.4; cursor:default; filter:none; }
+
+  /* ---------- hero ---------- */
+  .hero { padding:56px 0 40px; }
+  .hero h1 { font-size:2.35em; margin:0 0 14px; letter-spacing:-.02em; }
+  .hero .lede { font-size:1.12em; color:var(--dim); max-width:640px; }
+  .run-meta { display:flex; flex-wrap:wrap; gap:6px 0; margin:0 0 20px; }
+  .pill { display:inline-block; background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:3px 12px; color:var(--dim); font-size:.83em; margin:0 6px 6px 0; }
+  .pill b { color:var(--green); font-weight:600; }
+  .note { background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--amber); border-radius:12px; padding:16px 20px; color:var(--dim); font-size:.95em; max-width:720px; }
+  .note b { color:var(--text); }
+
+  /* ---------- stepper ---------- */
+  .step-tabs { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 24px; }
+  .step-tab { flex:1 1 140px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 14px; color:var(--dim); font-family:inherit; font-size:.92em; text-align:left; cursor:pointer; }
+  .step-tab:hover { border-color:var(--amber); color:var(--text); }
+  .step-tab[aria-current="true"] { background:var(--amber-soft); border-color:var(--amber); color:var(--text); }
+  .step-tab .n { display:block; color:var(--amber); font-family:ui-monospace,monospace; font-size:.78em; font-weight:700; letter-spacing:.08em; margin-bottom:2px; }
+  .step-panel { display:none; }
+  .step-panel.active { display:block; }
+  .step-panel h3 { font-size:1.25em; margin:0 0 6px; }
+  .step-panel .what { color:var(--dim); max-width:680px; }
+
+  /* ---------- terminal ---------- */
+  .term { background:#0a0e13; border:1px solid #1f262e; border-radius:12px; overflow:hidden; margin:20px 0 0; }
+  .term-bar { display:flex; align-items:center; gap:6px; padding:10px 14px; border-bottom:1px solid #1f262e; }
+  .term-dot { width:10px; height:10px; border-radius:50%; background:#2d333b; }
+  .term-dot:first-child { background:#ff5f57; }
+  .term-dot:nth-child(2) { background:#febc2e; }
+  .term-dot:nth-child(3) { background:#28c840; }
+  .term-title { margin-left:8px; color:var(--dim-2); font-size:.78em; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .term-body { padding:14px 16px 18px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px; line-height:1.65; white-space:pre-wrap; word-break:break-word; color:#c9d1d9; }
+  .term-body .cmd { color:var(--amber); }
+  .term-body .ok { color:var(--green); }
+  .term-body .prompt { color:var(--green); }
+  .explain { border-left:3px solid var(--amber); padding:2px 0 2px 16px; margin:20px 0 0; color:var(--dim); max-width:680px; }
+  .explain b { color:var(--text); }
+  .step-nav { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:28px; }
+  .step-count { color:var(--dim-2); font-size:.88em; }
+
+  /* ---------- grids & cards ---------- */
+  .grid { display:grid; gap:16px; }
+  .grid > * { min-width:0; }
+  .grid.cols-2 { grid-template-columns:1fr; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:22px; }
+  .card p { color:var(--dim); margin:0; font-size:.95em; }
+  .card h3 { margin-bottom:8px; }
+  .card code { color:var(--amber); font-size:.92em; word-break:break-word; }
+  .card .tag { display:inline-block; color:var(--amber); font-size:.78em; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:8px; }
+
+  footer { border-top:1px solid var(--line); padding:40px 0 56px; color:var(--dim); font-size:.88em; }
+  footer p { margin:0 0 8px; }
+
+  @media (min-width:900px) {
+    .hero { padding:72px 0 48px; }
+    .hero h1 { font-size:2.8em; }
+    .nav-links { display:flex; }
+    .grid.cols-2 { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span>Phone-to-Ship</span> <span class="ver-pill" id="brand-ver"></span></a>
+    <div class="nav-links">
+      <a href="index.html#features">Features</a>
+      <a href="index.html#how">How it runs</a>
+      <a href="demo.html" aria-current="page">Try the demo</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="index.html#faq">FAQ</a>
+    </div>
+    <a class="btn small nav-buy" href="index.html#pricing" id="nav-buy">Buy — $25</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <header class="hero">
+    <p class="eyebrow">Interactive demo</p>
+    <h1>Watch the loop run before you buy it</h1>
+    <p class="lede">No download, no sign-up. Five steps, each one a real command and its real output from a run of Phone-to-Ship on the included demo app. Click through it.</p>
+    <p class="run-meta">
+      <span class="pill" id="run-ver"></span>
+      <span class="pill">run <b>20261107-074509-ded5</b></span>
+      <span class="pill">23 files · 34,670 bytes</span>
+      <span class="pill"><b>0 fails</b></span>
+      <span class="pill">ended <b>verdict-ship</b></span>
+    </p>
+    <p class="note"><b>Every line of output below is copied verbatim from that run</b> — nothing invented, nothing tidied. The run happened in a scratch folder on this machine, so the paths in the output point there; on your phone they would point at your project instead. The demo app is the included demo-good tree: a small playable web tree, not a shipped game.</p>
+  </header>
+
+  <!-- ============ STEPPER ============ -->
+  <section class="section" id="demo" style="padding-top:0">
+    <div class="step-tabs" role="tablist" aria-label="Demo steps">
+      <button class="step-tab" role="tab" data-step="1" aria-current="true"><span class="n">STEP 1</span>Brief it</button>
+      <button class="step-tab" role="tab" data-step="2" aria-current="false"><span class="n">STEP 2</span>Check it</button>
+      <button class="step-tab" role="tab" data-step="3" aria-current="false"><span class="n">STEP 3</span>Run the loop</button>
+      <button class="step-tab" role="tab" data-step="4" aria-current="false"><span class="n">STEP 4</span>Package it</button>
+      <button class="step-tab" role="tab" data-step="5" aria-current="false"><span class="n">STEP 5</span>You decide</button>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="step-panel active" data-panel="1">
+      <h3>1. Brief it — scaffold the project</h3>
+      <p class="what">A short brief becomes a project shell: the brief itself, shipping checklists, release notes, and the phone-verdict sheet.</p>
+      <div class="term">
+        <div class="term-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span><span class="term-title">Termux — pts</span></div>
+        <div class="term-body"><span class="prompt">$</span> <span class="cmd">pts new --name "Demo Game" --out ./demo-game --target web</span>
+scaffolded Demo Game -&gt; demo-game (targets: web)
+
+<span class="prompt">$</span> <span class="cmd">cp -r fixtures/demo-good/. ./demo-game/</span></div>
+      </div>
+      <p class="explain"><b>What just happened:</b> <code>pts new</code> scaffolded the project. The demo app itself — the included demo-good tree, 8 files — was then dropped into the new project. That is the "put your built web tree in" step. The copy printed nothing; <code>cp</code> is quiet when it works.</p>
+      <div class="step-nav">
+        <span></span>
+        <span class="step-count">Step 1 of 5</span>
+        <button class="btn" data-goto="2">Next: check it →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step-panel" data-panel="2">
+      <h3>2. Check it — the readiness gate</h3>
+      <p class="what">Before anything runs, the gate looks the tree over: required files, JS syntax, leaked files, credential-shaped values, file count, bytes, hashes.</p>
+      <div class="term">
+        <div class="term-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span><span class="term-title">Termux — pts</span></div>
+        <div class="term-body"><span class="prompt">$</span> <span class="cmd">pts check --tree ./demo-game</span>
+{
+  "tree": "/tmp/pts-demo-scratch/demo-game",
+  "files": 23,
+  "bytes": 34670,
+  "sha256_index": "83f14ed8f547298a7808974b6ec5f96de4cba589370d270b4be94e43378253f2",
+  "fails": [],
+  "warnings": []
+}
+<span class="ok">FAIL: 0  WARN: 0</span></div>
+      </div>
+      <p class="explain"><b>What just happened:</b> the gate counted the tree (23 files, 34,670 bytes), hashed it, and found nothing wrong — zero fails, zero warnings. A missing file, a JS syntax error, or a leaked file would have shown up here by name, and the loop would have stopped.</p>
+      <div class="step-nav">
+        <button class="btn ghost" data-goto="1">← Back</button>
+        <span class="step-count">Step 2 of 5</span>
+        <button class="btn" data-goto="3">Next: run the loop →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step-panel" data-panel="3">
+      <h3>3. Run the loop — build, test, diagnose, package</h3>
+      <p class="what">One command runs the whole loop against the brief: plan, build, test, diagnose, repair what it safely can, package — then stop and wait.</p>
+      <div class="term">
+        <div class="term-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span><span class="term-title">Termux — pts</span></div>
+        <div class="term-body"><span class="prompt">$</span> <span class="cmd">pts orchestrate --tree ./demo-game --brief fixtures/demo-brief.md</span>
+build: inventory only, 23 files in tree, nothing fabricated
+packaged v3.3.0: 23 files, 34670 bytes at /tmp/pts-demo-scratch/demo-game/.pts/staged/20261107-074509-ded5
+<span class="ok">run 20261107-074509-ded5: awaiting-approval</span>
+staged package: /tmp/pts-demo-scratch/demo-game/.pts/staged/20261107-074509-ded5
+pts verdict --tree /tmp/pts-demo-scratch/demo-game --run 20261107-074509-ded5 --decision ship|fix|hold --note "..."</div>
+      </div>
+      <p class="explain"><b>What just happened:</b> the loop inventoried the tree, tested it, and staged a package — then stopped at awaiting-approval. Note the first line: the build step only inventories what is already there, it fabricates nothing. The run waits here until a human decides.</p>
+      <div class="step-nav">
+        <button class="btn ghost" data-goto="2">← Back</button>
+        <span class="step-count">Step 3 of 5</span>
+        <button class="btn" data-goto="4">Next: package it →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step-panel" data-panel="4">
+      <h3>4. Package it — a clean deliverable</h3>
+      <p class="what">The same packaging, on its own: a staged deliverable with a manifest and a phone checklist, ready to take to a phone.</p>
+      <div class="term">
+        <div class="term-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span><span class="term-title">Termux — pts</span></div>
+        <div class="term-body"><span class="prompt">$</span> <span class="cmd">pts package --tree ./demo-game --out ./demo-game-pkg --version v3.3.0</span>
+packaged v3.3.0: 23 files, 34670 bytes at /tmp/pts-demo-scratch/demo-game-pkg</div>
+      </div>
+      <p class="explain"><b>What just happened:</b> a standalone package, 23 files and 34,670 bytes, with a MANIFEST.json and a phone checklist inside. The orchestrate step in step 3 already staged one; this is the same packaging run on its own, so you can re-package without re-running the loop.</p>
+      <div class="step-nav">
+        <button class="btn ghost" data-goto="3">← Back</button>
+        <span class="step-count">Step 4 of 5</span>
+        <button class="btn" data-goto="5">Next: you decide →</button>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step-panel" data-panel="5">
+      <h3>5. You decide — the verdict is yours</h3>
+      <p class="what">The run has been waiting at awaiting-approval since step 3. Ship, fix, or hold — the call is a human's, and it is recorded, not acted on by the tool.</p>
+      <div class="term">
+        <div class="term-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span><span class="term-title">Termux — pts</span></div>
+        <div class="term-body"><span class="prompt">$</span> <span class="cmd">pts verdict --tree ./demo-game --run 20261107-074509-ded5 --decision ship --note "demo run: played it, ships"</span>
+<span class="ok">run 20261107-074509-ded5: verdict recorded: ship — demo run: played it, ships</span>
+verdict records a human decision only; nothing was published, pushed, or shipped.</div>
+      </div>
+      <p class="explain"><b>What just happened:</b> ship was recorded on run 20261107-074509-ded5, and the run's status became verdict-ship. The tool published, pushed, and shipped nothing — a verdict records a decision only. A second verdict on this run would be refused.</p>
+      <div class="step-nav">
+        <button class="btn ghost" data-goto="4">← Back</button>
+        <span class="step-count">Step 5 of 5</span>
+        <a class="btn" href="#what-it-adds">What the demo adds ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHAT IT ADDS ============ -->
+  <section class="section" id="what-it-adds">
+    <div class="section-head">
+      <p class="eyebrow">Beyond this page</p>
+      <h2>What the demo zip and the full version add</h2>
+      <p>You just watched the core loop. Here is what you get when you run it yourself, and what the paid version adds on top.</p>
+    </div>
+    <div class="grid cols-2">
+      <div class="card">
+        <span class="tag">Free demo zip</span>
+        <h3>Run this same loop yourself</h3>
+        <p>The demo zip is the core loop you just walked through — <code>pts new</code>, <code>check</code>, <code>orchestrate</code>, <code>package</code>, <code>verdict</code>, plus <code>doctor</code> and <code>self-test</code> — with both demo trees included: demo-good, which ships, and demo-bad, which has a leaked file, so you can watch the loop catch it. Try it on your own machine, on your own projects. It does not include the 7-agent orchestration or the Muse-loop AI import — those are the full version.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Full version — <span id="full-price"></span></span>
+        <h3>Agents and AI import</h3>
+        <p>The full version adds the 7-agent orchestration — architect, code, asset, test, build, deployment, and qa on one persistent queue, checkpointed after every step, with the same human verdict at the end — and the Muse-loop AI import: code and asset work arrives as validated JSON replies, prompt out and JSON in, with no live model, no keys, and no network. Everything else is the same loop you just watched.</p>
+        <p style="margin-top:16px"><a class="btn" href="index.html#pricing" id="full-buy">Get the full version</a></p>
+      </div>
+    </div>
+    <p class="dim small" style="margin-top:24px">Runs in Termux on Android. Python 3.9+, standard library only, no network calls, no account, no telemetry.</p>
+  </section>
+
+  <footer>
+    <p>Built by Taylor Christian Mattheisen (DOGBYTE). Questions or support: <a id="support" href="#">email</a>.</p>
+    <p><a href="index.html">Back to the Phone-to-Ship page</a></p>
+  </footer>
+
+</div><!-- /wrap -->
+
+<script src="config.js?v=3.3.0"></script>
+<script>
+  // ---- version / price from config.js (single source of truth) ----
+  document.getElementById("brand-ver").textContent = "v" + PTS.version;
+  document.getElementById("nav-buy").textContent = "Buy — $" + PTS.price;
+  document.getElementById("run-ver").textContent = "v" + PTS.version + " · " + PTS.releaseDate;
+  document.getElementById("full-price").textContent = "$" + PTS.price + " one-time";
+  document.getElementById("full-buy").textContent = "Get the full version — $" + PTS.price;
+  var sup = document.getElementById("support");
+  sup.textContent = PTS.supportEmail; sup.href = "mailto:" + PTS.supportEmail;
+
+  // ---- stepper: plain clicks, no framework ----
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".step-tab"));
+  var panels = Array.prototype.slice.call(document.querySelectorAll(".step-panel"));
+  function showStep(n) {
+    n = Math.max(1, Math.min(5, n));
+    tabs.forEach(function (t) {
+      t.setAttribute("aria-current", String(+t.dataset.step === n));
+    });
+    panels.forEach(function (p) {
+      p.classList.toggle("active", +p.dataset.panel === n);
+    });
+    if (history.replaceState) {
+      history.replaceState(null, "", "#step-" + n);
+    }
+  }
+  tabs.forEach(function (t) {
+    t.addEventListener("click", function () { showStep(+t.dataset.step); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-goto]"), function (b) {
+    b.addEventListener("click", function () { showStep(+b.dataset.goto); });
+  });
+  // Deep link: #step-3 opens step 3 on load, and on in-page hash change.
+  function stepFromHash() {
+    var m = location.hash.match(/^#step-([1-5])$/);
+    if (m) { showStep(+m[1]); }
+  }
+  window.addEventListener("hashchange", stepFromHash);
+  stepFromHash();
+</script>
+</body>
+</html>
