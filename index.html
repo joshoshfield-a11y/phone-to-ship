@@ -6,7 +6,7 @@
 <title>Phone-to-Ship — brief it on your phone, ship a tested web app</title>
 <meta name="description" content="Phone-to-Ship turns a short brief into a tested, packaged web app, built and verified from your phone via Termux.">
 <link rel="canonical" href="https://joshoshfield-a11y.github.io/phone-to-ship/">
-  <meta name="google-site-verification" content="POpDfw0zVrj-lpcvy3dWYeF-ZN8lPr0VZSjq9v6X7WY" />
+<meta name="google-site-verification" content="POpDfw0zVrj-lpcvy3dWYeF-ZN8lPr0VZSjq9v6X7WY">
 <style>
   :root {
     --bg:#0d1117; --bg-soft:#10151c; --panel:#161b22; --panel-2:#1c232d;
@@ -158,6 +158,7 @@
     <div class="nav-links">
       <a href="#features">Features</a>
       <a href="#how">How it runs</a>
+      <a href="demo.html">Try the demo</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
     </div>
@@ -335,6 +336,7 @@ $ pts verdict &lt;run-id&gt; ship</code></pre>
     </div>
     <p class="dim">Every release lists its exact size and SHA-256 so you can check the file you got is the file that was built.</p>
     <p class="ver" id="verify"></p>
+    <p class="ver" id="verify-demo"></p>
   </section>
 
   <footer>
@@ -354,6 +356,9 @@ $ pts verdict &lt;run-id&gt; ship</code></pre>
     }
     if (PTS.stripePaymentLink) {
       h += '<a class="btn ghost" href="' + PTS.stripePaymentLink + '">Buy direct with card (Stripe)</a>';
+    }
+    if (PTS.demoZip) {
+      h += '<a class="btn ghost" href="' + PTS.demoZip + '">Download the free demo</a>';
     }
     if (!PTS.itchUrl && !PTS.stripePaymentLink) {
       h += '<p class="dim">Sales open soon — check back, or email for the current version.</p>';
@@ -418,6 +423,8 @@ $ pts verdict &lt;run-id&gt; ship</code></pre>
   // ---- verify + footer ----
   document.getElementById("verify").textContent =
     "v" + PTS.version + ": " + PTS.zipBytes.toLocaleString() + " bytes · sha256 " + PTS.zipSha256;
+  document.getElementById("verify-demo").textContent =
+    "Demo v" + PTS.version + "-demo: " + PTS.demoZipBytes.toLocaleString() + " bytes · sha256 " + PTS.demoZipSha256;
   const sup = document.getElementById("support");
   sup.textContent = PTS.supportEmail; sup.href = "mailto:" + PTS.supportEmail;
   document.getElementById("gh").href = PTS.githubUrl;
