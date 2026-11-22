@@ -19,6 +19,10 @@ const PTS = {
   zipBytes: 113340,
   zipSha256: "6f792781fca0015d7a8138d950b3e7edbd402c111905c7c878f2995d269ef9d1",
   fileCount: 68,
+  // Free demo cut from this version (core loop only, no ai/agents).
+  demoZip: "phone-to-ship-product-3.3.0-demo.zip",
+  demoZipBytes: 94235,
+  demoZipSha256: "9b7a0bfb108d4aaeabdb4d73081eee80c8e10d9d702d53aa4317af92e075eb16",
   // What is actually inside the v3.3.0 zip (verified against the archive).
   zipContents: [
     { name: "bin/pts", desc: "The command line: orchestrate, runs, verdict, doctor, snapshot, restore, config, ai, agents." },
